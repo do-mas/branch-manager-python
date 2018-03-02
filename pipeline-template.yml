@@ -1,0 +1,27 @@
+resources:
+- name: source
+  type: git
+  source:
+    uri: {{git_repo}}
+    branch: {{branch}}
+
+- name: cloud
+  type: cf
+  source:
+    api: https://api.run.pivotal.io
+    username: domas.juodele@gmail.com
+    password:
+    organization: doju-pro
+    space: development
+
+jobs:
+
+- name: deploy
+  plan:
+  - get: source
+    trigger: true
+  - task: build
+    file: source/ci/build.yml
+  - put: cloud
+    params:
+      manifest: build-out/manifest.yml
